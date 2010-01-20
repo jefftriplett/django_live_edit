@@ -1,0 +1,58 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" 
+  "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+  <head>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Basic example of how to use the jQuery in-place-edit plugin</title>
+
+    <script type="text/javascript" src="/media/javascripts/jquery.js"></script>
+    <script type="text/javascript" src="/media/javascripts/jquery.in-place-edit.js"></script>
+    <script type="text/javascript" src="/media/javascripts/application.js"></script>
+
+    <link rel="stylesheet" href="/media/stylesheets/blueprint/screen.css" type="text/css" media="screen, projection">
+    <link rel="stylesheet" href="/media/stylesheets/blueprint/print.css" type="text/css" media="print">    
+    <link rel="stylesheet" href="/media/stylesheets/application.css" type="text/css" media="screen, projection">    
+
+  </head>
+<body>
+
+  <script type="text/javascript">
+    var submit_handler = function(element, id, value) {
+        jQuery.post("{% url live_edit %}",
+          {
+            slug: id,
+            value: value,
+          },
+          function(data){
+            if (data.errors) {
+              alert(data.errors);
+            }
+            console.log(data);
+          }, "json"
+        );
+        //alert("Edited id '" + id + "' value '" + value + "'");
+        return true;
+    };
+
+    var cancel_handler = function(element) {
+        // Nothing
+        return true;
+    };
+
+    // Enable in-place-edit when document is loaded
+    $(document).ready(function(){
+
+      $(".in-place-edit").children().inPlaceEdit({
+        submit : submit_handler,
+        cancel : cancel_handler
+      });            
+    });
+  </script>
+  You should be able to click on the text below and edit it. If you click save you should see a dialog box:
+
+{% block content %}
+{% endblock %}
+
+</body>
+</html>

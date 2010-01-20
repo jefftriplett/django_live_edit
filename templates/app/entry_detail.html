@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+<div class="in-place-edit">
+  <p id="app-entry-title-1">{{ object.title }}</p>
+</div>
+
+<div class="custom-in-place-edit textarea">
+  <p id="app-entry-body-1">{{ object.body }}</p>
+</div>
+{% endblock %}
