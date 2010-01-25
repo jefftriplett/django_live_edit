@@ -1,37 +1,42 @@
 from django.contrib.auth.models import get_hexdigest
 from django.db.models import get_model
+from django.forms import Form, ModelForm
+from django.forms.models import modelform_factory
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.utils import simplejson
 
-from django.forms import Form, ModelForm
 
-from django.forms.models import modelformset_factory
-
-
-def live_edit_form(request, app_label, module_label, field, template_name='live_edit/default_form.html'):
-
-    class ModelFormSet(ModelForm):
-
-        class Meta:
-            model = get_model(app_label, module_label)
-            fields = (field,)
-
-    form = ModelFormSet()
+def live_edit_form(request, template_name='live_edit/default_form.html'):
+    if 'slug' in request.GET:
+        slug = request.GET.get('slug')
+        app_label, module_label, id, field = slug.split('-')
+        model_obj = get_model(app_label, module_label)
+        ModelFormSet = modelform_factory(model=model_obj, fields=(field,))
+        form = ModelFormSet()
+    else:
+        form = None
 
     return render_to_response(template_name, {
         'form': form,
         }, context_instance=RequestContext(request))
 
 
-def live_edit_json(request, app_label, module_label, field, id):
-    model = get_model(app_label, module_label)
-    object = model._default_manager.get(id=id)
-
+def live_edit_json(request):
     response_dict = {}
-    if hasattr(object, field):
-        response_dict.update({field: hasattr(object, field)})
+
+    if 'slug' in request.GET:
+        slug = request.GET.get('slug')
+        app_label, module_label, id, field = slug.split('-')
+        model_obj = get_model(app_label, module_label)
+        object = model_obj._default_manager.get(id=id)
+
+        if hasattr(object, field):
+            response_dict.update({field: hasattr(object, field)})
+        else:
+            response_dict.update({'errors': {}})
+            response_dict['errors'].update({field: 'A valid field is required'})
     else:
         response_dict.update({'errors': {}})
         response_dict['errors'].update({field: 'A valid field is required'})
