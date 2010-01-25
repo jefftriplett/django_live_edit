@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>ArashKarimzadeh.com</title>
+<style>
+.input {
+  color: #f00;
+  background: #00CCCC;
+  width: 400px;
+}
+div button{
+  color: #f0f;
+}
+</style>
+<script language="javascript" type="text/javascript" src="jquery-1.2.6.min.js"></script>
+<script language="javascript" type="text/javascript" src="editable-1.1.0-extended.js"></script>
+<script>
+$(function(){
+  //#
+  function begin(){
+    this.append('Double Click to submit');
+  }
+  function end(content){
+    alert(content.current+':'+content.previous)
+  }
+  $('.editable5').editable({
+            type:'checkbox',
+            options:{'val1':'val1','val2':'val2','val3':'val3'},
+            submit:'save',
+            cancel:'cancel',
+            editClass:'resultItem',
+            onSubmit:end
+            });
+  //#
+});
+</script>
+</head>
+<body>
+  <div class="editable5">val1,val2</div>
+</body>
+</html>
