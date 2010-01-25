@@ -23,6 +23,30 @@ def live_edit_form(request, template_name='live_edit/default_form.html'):
         }, context_instance=RequestContext(request))
 
 
+def live_edit_snippet(request, template_name='live_edit/snippets/default.html'):
+    template_list = []
+    if 'slug' in request.GET:
+        slug = request.GET.get('slug')
+        app_label, module_label, id, field = slug.split('-')
+        model_obj = get_model(app_label, module_label)
+        ModelFormSet = modelform_factory(model=model_obj, fields=(field,))
+        object = model_obj._default_manager.get(id=id)
+        field_str = '%s.%s.%s' % (object._meta.app_label, object._meta.module_name, field)
+        value = getattr(object, field)
+        template_list.append('live_edit/snippets/%s.html' % (field_str))
+        template_list.append('live_edit/snippets/default.html')
+
+    else:
+        object = None
+        value = None
+        template_list.append('live_edit/snippets/default.html')
+
+    return render_to_response(template_name, {
+        'object': object,
+        'value': value,
+        }, context_instance=RequestContext(request))
+
+
 def live_edit_json(request):
     response_dict = {}
 
@@ -33,7 +57,7 @@ def live_edit_json(request):
         object = model_obj._default_manager.get(id=id)
 
         if hasattr(object, field):
-            response_dict.update({field: hasattr(object, field)})
+            response_dict.update({field: getattr(object, field)})
         else:
             response_dict.update({'errors': {}})
             response_dict['errors'].update({field: 'A valid field is required'})

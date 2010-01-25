@@ -13,4 +13,8 @@ urlpatterns = patterns('',
     url(r'^json/$',
         view='live_edit.views.live_edit_json',
         name='live_edit_json'),
+
+    url(r'^snippet/$',
+        view='live_edit.views.live_edit_snippet',
+        name='live_edit_snippet'),
 )
