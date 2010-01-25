@@ -20,13 +20,12 @@ $(document).ready(function(){
           <input type="button" value="Cancel" class="cancel-button" /> \
         </div> \
       </div>';
-      
+
   var custom_form_2 = ' \
       <div class="in-place-edit"> \
         <select class="field"> \
-          <option>Feed the horse</option> \
-          <option>Feed the dog</option> \
-          <option>Feed the cat</option> \
+          <option value="True">True</option> \
+          <option value="False">False</option> \
         </select> \
         <div class="buttons"> \
           <input type="button" value="Save" class="save-button" /> \
@@ -36,11 +35,15 @@ $(document).ready(function(){
 
   // Example how how to use DOM elements as templates
   var custom_form_3 = $('#form-template');
-      
+
+  var output = $.get("/live_edit/form/app/entry/title/", {}, function(responseText){return(responseText);}, "html");
+  var custom_form_4 = output.responseText;
+
   // paragraph, list examples
   $(".in-place-edit").children().inPlaceEdit({
     submit : submit_handler,
     cancel : cancel_handler
+    //html   : custom_form_4
   });
 
   // textarea example
@@ -56,7 +59,7 @@ $(document).ready(function(){
     cancel : cancel_handler,
     html   : custom_form_2
   });
-  
+
   // form template example
   $("#custom-template").inPlaceEdit({
     submit : submit_handler,

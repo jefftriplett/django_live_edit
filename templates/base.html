@@ -31,7 +31,7 @@
             console.log(data);
           }, "json"
         );
-        //alert("Edited id '" + id + "' value '" + value + "'");
+        $('#info').html("Edited id '" + id + "' value '" + value + "'");
         return true;
     };
 
@@ -49,10 +49,9 @@
       });            
     });
   </script>
-  You should be able to click on the text below and edit it. If you click save you should see a dialog box:
-
+  <p>You should be able to click on the text below and edit it. If you click save you should see a dialog box:</p>
 {% block content %}
 {% endblock %}
-
+<div id="info"></div>
 </body>
 </html>

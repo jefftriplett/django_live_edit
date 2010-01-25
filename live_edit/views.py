@@ -1,6 +1,42 @@
+from django.contrib.auth.models import get_hexdigest
 from django.db.models import get_model
 from django.http import HttpResponse
+from django.shortcuts import render_to_response
+from django.template import RequestContext
 from django.utils import simplejson
+
+from django.forms import Form, ModelForm
+
+from django.forms.models import modelformset_factory
+
+
+def live_edit_form(request, app_label, module_label, field, template_name='live_edit/default_form.html'):
+
+    class ModelFormSet(ModelForm):
+
+        class Meta:
+            model = get_model(app_label, module_label)
+            fields = (field,)
+
+    form = ModelFormSet()
+
+    return render_to_response(template_name, {
+        'form': form,
+        }, context_instance=RequestContext(request))
+
+
+def live_edit_json(request, app_label, module_label, field, id):
+    model = get_model(app_label, module_label)
+    object = model._default_manager.get(id=id)
+
+    response_dict = {}
+    if hasattr(object, field):
+        response_dict.update({field: hasattr(object, field)})
+    else:
+        response_dict.update({'errors': {}})
+        response_dict['errors'].update({field: 'A valid field is required'})
+
+    return HttpResponse(simplejson.dumps(response_dict), mimetype='application/javascript')
 
 
 def live_edit(request):
@@ -11,28 +47,55 @@ def live_edit(request):
     Context:
         live_edit
             Generically update an object
-    """
-    response_dict = {}
 
+    TODO:
+    - error handling needs to be written when I am awake...
+
+    """
     slug = request.POST.get('slug')
     value = request.POST.get('value')
 
-    if slug and value:
-        bits = slug.split('-')
-        app_label = bits[0]
-        module_label = bits[1]
-        field = bits[2]
-        id = bits[3]
-        model = get_model(app_label, module_label)
-        object = model._default_manager.get(id=id)
+    if 'slug' in request.GET:
+        slug = request.GET.get('slug')
 
-        if getattr(object, field):
-            setattr(object, field, value)
-            object.save()
-            response_dict.update({'success': True})
+    if 'value' in request.GET:
+        value = request.GET.get('value')
+
+    response_dict = {}
+
+    if slug and value:
+        #try:
+        app_label, module_label, id, field, hashed_key = slug.split('-')
+        namespace = '-'.join(slug.split('-')[:4])
+        check_hash = get_hexdigest('sha1', 'a1976', namespace)
+
+        if hashed_key == check_hash:
+            namespace = '-'.join([
+                app_label,
+                module_label,
+                id,
+                field,
+            ])
+
+            model = get_model(app_label, module_label)
+            object = model._default_manager.get(id=id)
+
+            if getattr(object, field):
+                setattr(object, field, value)
+                object.save()
+                response_dict.update({'success': True})
+
+            else:
+                response_dict.update({'errors': {}})
+                response_dict['errors'].update({field: 'An invalid app, module, or fieldname is required'})
+
         else:
             response_dict.update({'errors': {}})
-            response_dict['errors'].update({field: 'An invalid app, module, or fieldname is required'})
+            response_dict['errors'].update({'status': 'Unable to update application because security keys do not match'})
+
+        #except ValueError:
+        #    response_dict.update({'errors': {}})
+        #    response_dict['errors'].update({'status': 'An invalid app, module, or fieldname is required'})
 
     else:
         response_dict.update({'errors': {}})

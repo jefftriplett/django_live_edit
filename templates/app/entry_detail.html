@@ -1,12 +1,17 @@
 {% extends "base.html" %}
+{% load live_edit %}
 
 
 {% block content %}
 <div class="in-place-edit">
-  <p id="app-entry-title-1">{{ object.title }}</p>
+  <p id="{% generate_hash object title %}">{{ object.title }}</p>
+</div>
+
+<div class="custom-in-place-edit select">
+  <p id="{% generate_hash object public %}">{{ object.public }}</p>
 </div>
 
 <div class="custom-in-place-edit textarea">
-  <p id="app-entry-body-1">{{ object.body }}</p>
+  <div id="{% generate_hash object body %}">{% render_snippet object body live_edit/snippets %}</div>
 </div>
 {% endblock %}
