@@ -1,20 +1,3 @@
-"""
-
-Either generate forms via JSON or generate the following template via a ModelForm, etc:
-
-    <div class="in-place-edit"> \
-      <select class="field"> \
-        <option>True</option> \
-        <option>False</option> \
-      </select> \
-      <div class="buttons"> \
-        <input type="button" value="Save" class="save-button" /> \
-        <input type="button" value="Cancel" class="cancel-button" /> \
-      </div> \
-    </div>';
-
-"""
-
 from django import template
 from django.contrib.auth.models import get_hexdigest
 from django.template.loader import render_to_string
