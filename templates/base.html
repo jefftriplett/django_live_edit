@@ -19,7 +19,7 @@
 
   <script type="text/javascript">
     var submit_handler = function(element, id, value) {
-        jQuery.post("{% url live_edit %}",
+        jQuery.post("{% url live_edit_save %}",
           {
             slug: id,
             value: value,

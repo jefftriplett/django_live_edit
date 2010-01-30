@@ -68,7 +68,7 @@ def live_edit_json(request):
     return HttpResponse(simplejson.dumps(response_dict), mimetype='application/javascript')
 
 
-def live_edit(request):
+def live_edit_save(request):
     """
     Live edit
 
