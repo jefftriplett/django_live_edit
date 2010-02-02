@@ -53,6 +53,31 @@
 
         if(typeof(settings.html) == 'string') {      // There are two types of form templates: strings and DOM elements
           element.html(settings.html);               // Replace current HTML with given HTML
+          element.load("/live_edit/form/?id=" + id, (function(){
+            $('.in-place-edit input[type!=button], .in-place-edit textarea').addClass('field');
+
+            $('.field', element).val(element.old_value); // Set field value to old HTML
+            $('.field', element).focus();                // Set focus to input field
+            $('.field', element).select();               // Select all text in field
+
+            // On save: revert to old HTML and submit
+            $('.save-button', element).click(function() {
+              return submit();
+            });
+
+            $('.save-button', element).mousedown(function() {
+              element.data('skipBlur', true)
+            });
+
+            $('.cancel-button', element).mousedown(function() {
+              element.data('skipBlur', true)
+            });
+
+            // On cancel: revert to old HTML
+            $('.cancel-button', element).click(function() {
+              return cancel();
+            });
+          }));
         }
         else {
           element.html('');                          // Replace current HTML with given object's HTML
@@ -150,6 +175,8 @@
         element.removeClass("hover editing");
 
         element.html(value);
+
+        element.load("/live_edit/snippet/?id=" + id);
 
         return false; // Stop propagation
       };

@@ -75,7 +75,7 @@ def generate_hash(parser, token):
     try:
         tag_name, object, field = token.contents.split()
 
-    except ValueEerror:
+    except ValueError:
         raise template.TemplateSyntaxError, "%s tag requires two arguments '[object] [fieldname]'" % token.contents.split()[0]
 
     return RenderHashForNode(object, field)
@@ -86,7 +86,7 @@ def render_snippet(parser, token):
     try:
         tag_name, object, field, template_dir = token.contents.split()
 
-    except ValueEerror:
+    except ValueError:
         raise template.TemplateSyntaxError, "%s tag requires three arguments '[object] [fieldname] [template_dir]'" % token.contents.split()[0]
 
     return RenderTemplateForNode(object, field, template_dir)

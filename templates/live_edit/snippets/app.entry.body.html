@@ -1,2 +1,4 @@
 {% load markup %}
-{{ value|markdown }}
+{% filter markdown %}
+{{ value }}
+{% endfilter %}

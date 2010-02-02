@@ -114,6 +114,7 @@ def live_edit_snippet(request, template_name='live_edit/snippets/default.html'):
         value = getattr(object, field)
         template_list.append('live_edit/snippets/%s.html' % (field_str))
         template_list.append('live_edit/snippets/default.html')
+        print template_list
     else:
         object = None
         value = None
