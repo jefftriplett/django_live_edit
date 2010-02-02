@@ -13,8 +13,9 @@ def live_edit_form(request, template_name='live_edit/default_form.html'):
         id = request.GET.get('id')
         app_label, module_label, object_id, field, hashed_key = id.split('-')
         model_obj = get_model(app_label, module_label)
+        object = model_obj._default_manager.get(id=object_id)
         ModelFormSet = modelform_factory(model=model_obj, fields=(field,))
-        form = ModelFormSet()
+        form = ModelFormSet(instance=object)
     else:
         form = None
 
