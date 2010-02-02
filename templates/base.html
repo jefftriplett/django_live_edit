@@ -14,6 +14,12 @@
     <link rel="stylesheet" href="/media/stylesheets/blueprint/print.css" type="text/css" media="print">    
     <link rel="stylesheet" href="/media/stylesheets/application.css" type="text/css" media="screen, projection">    
 
+    <style>
+    .holder {
+      border: 1px solid black;
+    }
+    </style>
+
   </head>
 <body>
 
@@ -21,7 +27,7 @@
     var submit_handler = function(element, id, value) {
         jQuery.post("{% url live_edit_save %}",
           {
-            slug: id,
+            id: id,
             value: value,
           },
           function(data){
@@ -42,16 +48,16 @@
 
     // Enable in-place-edit when document is loaded
     $(document).ready(function(){
-
       $(".in-place-edit").children().inPlaceEdit({
         submit : submit_handler,
         cancel : cancel_handler
-      });            
+      });
     });
   </script>
   <p>You should be able to click on the text below and edit it. If you click save you should see a dialog box:</p>
 {% block content %}
 {% endblock %}
 <div id="info"></div>
+<div id="holder"></div>
 </body>
 </html>

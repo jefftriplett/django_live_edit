@@ -44,6 +44,9 @@
             return;
         }
 
+        var id = element.attr('id');
+        $("#holder").load("/live_edit/form/?id=" + id);
+
         element.addClass("editing");
 
         element.old_value = element.html();          // Store old HTML so we can revert to it later

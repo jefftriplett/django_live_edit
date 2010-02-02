@@ -1,5 +1,5 @@
 var submit_handler = function(element, id, value) {
-    $('#info').html("Edited id '" + id + "' value '" + value + "'");
+    $('#info').html("Edited id '" + id);
     return true;
 };
 
@@ -36,14 +36,10 @@ $(document).ready(function(){
   // Example how how to use DOM elements as templates
   var custom_form_3 = $('#form-template');
 
-  var output = $.get("/live_edit/form/app/entry/title/", {}, function(responseText){return(responseText);}, "html");
-  var custom_form_4 = output.responseText;
-
   // paragraph, list examples
   $(".in-place-edit").children().inPlaceEdit({
     submit : submit_handler,
     cancel : cancel_handler
-    //html   : custom_form_4
   });
 
   // textarea example
